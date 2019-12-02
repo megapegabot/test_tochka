@@ -1,0 +1,28 @@
+version: '3.7'
+
+services:
+  user_service:
+    build:
+      context: ./user_service
+    volumes:
+      - ./:/opt/api/
+    ports:
+      - 10000:8080
+
+
+  pgweb:
+    container_name: pgweb
+    image: sosedoff/pgweb
+    restart: always
+    environment:
+      DATABASE_URL: postgres://${DB_USER:-user}:${DB_PASSWORD:-P@ssw0rd}@db:5432/postgres?sslmode=disable
+    ports:
+      - 8083:8081
+    networks:
+      - backend_nw
+
+  db:
+    volumes:
+      - ./:/opt/api/
+    ports:
+      - 5432:5432
